@@ -1,0 +1,29 @@
+name: Deploy website on push
+on:
+  push:
+    branches: [prod]
+  workflow_dispatch:
+jobs:
+  web-deploy:
+    name: Auto Deploy
+    runs-on: ubuntu-latest
+    steps:
+    - name: Get latest code
+      uses: actions/checkout@v3
+
+    - name: FTP Deploy
+      uses: SamKirkland/FTP-Deploy-Action@4.3.0
+      with:
+        server-dir: './plugins/jaringlead/'
+        server: ${{ secrets.PROD_FTP_SERVER }}
+        username: ${{ secrets.PROD_FTP_USER }}
+        password: ${{ secrets.PROD_FTP_PASS }}
+        port: ${{ secrets.PROD_FTP_PORT }}
+        exclude: |
+          **/.git*
+          **/.git*/**
+          **/.github*
+          **/.github*/**
+          **/vendor/**
+          **/node_modules/**
+          **/.env
